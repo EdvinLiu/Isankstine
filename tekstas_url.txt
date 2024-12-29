@@ -1,0 +1,23 @@
+Text fragments allow linking directly to a specific portion of text in a web document, without requiring the author to annotate it with an ID, using particular syntax in the URL fragment. Supporting browsers are free to choose how to draw attention to the linked text, e.g. with a color highlight and/or scrolling to the content on the page. This is useful because it allows web content authors to deep-link to other content they don't control, without relying on the presence of IDs to make that possible. Building on top of that, it could be used to generate more effective content-sharing links for users to pass to one another.
+
+Concepts and usage
+Historically, one of the web's key features has always been its ability to provide links between different documents — it is what makes the web, a web:
+
+You can link to the top of a document by linking to its URL, for example:
+https://developer.mozilla.org/en-US/docs/Web/HTML/Element/a.
+You can link to a specific section of a document by linking to its URL plus the document fragment (ID) of that section, for example:
+https://developer.mozilla.org/en-US/docs/Web/HTML/Element/a#browser_compatibility.
+The issue with linking to specific document fragments is that the author of the linked page needs to put an anchor in place to actually link to. The second example above links to an h2 element with an ID of browser_compatibility:
+If the ID is changed or removed, the document fragment is ignored, and the link just links through to the top of the page. This is reasonable in terms of graceful degradation, but it would arguably be better if the author of the link had full control over where they link to, without needing to rely on the page author.
+
+Text fragments make this a reality — they allow link authors to specify text content to link to, rather than document fragments, in a flexible manner.
+www.vu.lt
+vu.lt
+Examples
+Simple text fragment with textStart
+https://example.com#:~:text=for scrolls to and highlights the first instance of the text for in the document.
+https://developer.mozilla.org/en-US/docs/Web/HTML/Element/a#:~:text=human scrolls to and highlights the first instance of the text human in the document.
+https://developer.mozilla.org/en-US/docs/Web/HTML/Element/a#:~:text=linked%20URL scrolls to and highlights the first instance of the text linked URL in the document.
+textStart and textEnd
+https://developer.mozilla.org/en-US/docs/Web/HTML/Element/a#:~:text=human,URL scrolls to and highlights the first instance of a text string starting with human and ending with URL.
+https://developer.mozilla.org/en-US/docs/Web/HTML/Element/a#:~:text=linked%20URL,defining%20a%20value scrolls to and highlights the first instance of a text string starting with linked URL and ending with defining a value. Note how the highlighted text spans across multiple block-level elements.
