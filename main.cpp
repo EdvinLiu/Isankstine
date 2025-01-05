@@ -6,6 +6,7 @@
 #include <sstream>
 #include <vector>
 #include <regex>
+#include <set>
 
 using namespace std;
 
@@ -13,7 +14,7 @@ using namespace std;
 string removePunctuation(const string& word) {
     string cleanedWord;
     for (char ch : word) {
-            if((ch >= 65 && ch <=90) || (ch >= 97 && ch <= 122))// Paliekame tik raides, skaičius ir brūkšnelius
+            if((ch >= 65 && ch <=90) || (ch >= 97 && ch <= 122))// Paliekame tik raides
             cleanedWord += tolower(ch);
     }
     return cleanedWord;
@@ -21,7 +22,7 @@ string removePunctuation(const string& word) {
 
 vector<string> findURLs(const string& line) {
     vector<string> urls;
-    regex urlRegex(R"((http|https):\/\/\S+|www\.\S+|\b\w+\.\w{2,}\b)");
+    regex urlRegex(R"((http|https):\/\/[^\s]*\.(?!pdf|doc|jpg|png|zip|rar|exe)[^\s]+|www\.[^\s]*\.(?!pdf|doc|jpg|png|zip|rar|exe)[^\s]+|\b[^\s]+\.(?!pdf|doc|jpg|png|zip|rar|exe)[a-zA-Z]{2,}\b)");
     auto wordsBegin = sregex_iterator(line.begin(), line.end(), urlRegex);
     auto wordsEnd = sregex_iterator();
 
@@ -31,10 +32,29 @@ vector<string> findURLs(const string& line) {
 
     return urls;
 }
+int countWordsWithSubstring(ifstream& inputFile, const string& substring) {
+    set<string> uniqueWords;
+    string line;
+
+    while (getline(inputFile, line)) {
+        stringstream ss(line);
+        string word;
+        while (ss >> word) {
+            word = removePunctuation(word);
+            if (!word.empty() && word.find(substring) != string::npos) {
+                uniqueWords.insert(word);
+            }
+        }
+    }
+    for (auto wrd : uniqueWords) {
+        cout << wrd << endl;
+    }
+    return uniqueWords.size();
+}
 
 int main() {
     char pasirinkite;
-    cout << "Pasirinkite ar skaiciuoti zodzius (z) ar ieskoti URL (u): ";
+    cout << "Pasirinkite ar skaiciuoti zodzius (z) ar ieskoti URL (u), ar daleles (d): ";
     cin >> pasirinkite;
 
     ifstream inputFile("tekstas_url.txt");
@@ -107,6 +127,18 @@ int main() {
         outputFile.close();
         cout << "Programa baigta. URL adresai issaugoti faile rezultatai.txt." << endl;
 
+    }
+    else if (pasirinkite == 'd') {
+        inputFile.clear();
+        inputFile.seekg(0); // Grįžtame į failo pradžią
+
+        cout << "Iveskite dali, kurios ieskote zodziuose: ";
+        string substring;
+        cin >> substring;
+
+        int count = countWordsWithSubstring(inputFile, substring);
+
+        cout << "Zodziu, turinciu dali \"" << substring << "\": " << count << endl;
     }
     else cout << "Blogai ivestas pasirinkimas" << endl;
 
